@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cubo"
+        android:src="@drawable/cubo"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginBottom="150dp"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bordeI"
+        android:src="@drawable/borde_i"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentStart="false"
+        android:layout_marginBottom="0dp"
+        android:layout_centerVertical="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bordeD"
+        android:src="@drawable/borde_d"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/bordeI" />
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/circulos" />
+
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/negro2"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="#FFFFFF"
+
+        android:layout_alignStart="@+id/imageButton2"
+        android:layout_alignLeft="@+id/imageButton2"
+        android:layout_marginTop="80dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rojo1"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="#FFFFFF"
+
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="40dp" />
+
+
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/blanco1"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="#FFFFFF"
+
+        android:layout_below="@+id/imageButton2"
+        android:layout_alignStart="@+id/imageButton2" />
+
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/aguja1"
+        android:background="#FFFFFF"
+
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentEnd="false"
+        android:layout_marginLeft="1050dp"
+        android:layout_marginTop="0dp"
+        android:layout_alignTop="@+id/imageButton1" />
+
+    <ImageButton
+        android:id="@+id/imageButton5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/actuator_selector"
+
+        android:layout_marginRight="0dp"
+        android:layout_alignEnd="@id/imageButton4"
+        android:layout_marginBottom="80dp"
+        android:layout_alignLeft="@+id/imageButton4"
+        android:layout_alignTop="@+id/imageButton2"
+        android:layout_alignParentEnd="false"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/bqlogo"
+
+        android:layout_alignParentEnd="false"
+        android:layout_alignLeft="@+id/imageButton5"
+        android:layout_marginLeft="50dp"
+        android:layout_alignTop="@+id/imageButton3"
+        android:layout_marginTop="120dp"
+        android:src="@drawable/bqlogo" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth"
+        android:id="@+id/bluetoothButton"
+        android:layout_alignBottom="@+id/bqlogo"
+        android:layout_centerHorizontal="true" />
+
+    <!--
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/link1"
+        android:src="@drawable/link1_2"
+
+        android:layout_marginLeft="290dp"
+        android:layout_marginRight="0dp"
+        android:layout_alignTop="@+id/cubo"
+        android:layout_alignLeft="@+id/cubo" />
+    -->
+    <!-- 290=630/2 (mitad de cubo) -50/2 (mitad del grosor del link) -->
+
+    <!--
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/link2"
+        android:src="@drawable/link2_2"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_below="@+id/link1"
+        android:layout_alignStart="@+id/link1"
+        android:layout_marginTop="-50dp" />
+    -->
+
+</RelativeLayout>
+
+
+</LinearLayout>
