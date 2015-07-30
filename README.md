@@ -14,7 +14,7 @@ Attributions
  - [Alvaro Ferrán](https://github.com/alvaroferran)
   - Programming
 
- - [Alberto Arribas]()
+ - [Alberto Arribas](http://www.albertoarribasart.com/)
   - Artistic design
 
 
