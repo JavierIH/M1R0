@@ -27,9 +27,6 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 
-import bq.alvaro_ferran.m1r0.R;
-
-
 /**
  * Created by alvaro-ferran on 8/06/15.
  */
@@ -50,7 +47,7 @@ public class MainActivity extends Activity {
     ImageButton black, red, white, needle, linearAct;
     Button bluetoothButton;
     int blackState, yellowState, whiteState, needleState=0;
-    int scaraOption;
+    int scaraOption=1;
     int color=0xFF000000;
 
 
@@ -309,7 +306,7 @@ public class MainActivity extends Activity {
 
         //Toast.makeText(getBaseContext(), ""+time+"", Toast.LENGTH_SHORT).show();
 
-        if(angles[0]>0) {  //no error
+        if(angles[0]>0 && time>0) {  //no error
             sendBT("" + angles[0] + "," + angles[1] + "," + time + "," + scaraOption + "");
             //Toast.makeText(getBaseContext(), "Coords: " +  + " " +  + "\n Angles: " + A1 + " " + A2 + "\n Ltot: " + Lab, Toast.LENGTH_SHORT).show();
             return true;

@@ -16,32 +16,40 @@ void setup(){
 	Serial.begin(19200);
 	Serial.flush();
 
-	zowi.init(pinLink1, pinLink2, 10, 11, 0); //4 pines servos + bool 0 = no carga de eeprom
-	zowi.setTrims(0,0,0,0); //ajuste punto 0
+	zowi.init(pinLink1, pinLink2, 10, 11, 0); //4 servos + bool 0 = doesn't read from eeprom
+	zowi.setTrims(0,0,0,0); //adjust center for servo
 	zowi.moveServos(0, pos);
+
 	pinMode(pinLinear1, OUTPUT);
 	pinMode(pinLinear2, OUTPUT);
-}
 
-
-
-
-String readString(){
-	String inString ="";
-	char inChar;
-	while(Serial.available()>0){
-		inChar =(char) Serial.read();
-		/*if (inChar=='='){
-			inString="";
-		}
-		else if(inChar!='+'){*/
-			inString+=inChar;
-		/*}*/
-		delay(1);
+	//Retract all syringes on startup and bring needle up
+	Servo myServo;
+	int pin[3]={pinBlack,pinYellow, pinWhite};
+	for (int i=0; i<3; i++){
+		myServo.attach(pin[i]);
+		myServo.write(60);
+		delay(1000);
 	}
-	newInfoReceived=true;
-	return inString;
-}
+	myServo.attach(pinNeedle);
+	myServo.write(0);
+
+	}
+
+
+
+
+	String readString(){
+		String inString ="";
+		char inChar;
+		while(Serial.available()>0){
+			inChar =(char) Serial.read();
+			inString+=inChar;
+			delay(1);
+		}
+		newInfoReceived=true;
+		return inString;
+	}
 
 
 
@@ -52,13 +60,13 @@ void linearActuator(){
 	digitalWrite(pinLinear2, LOW);
 	setCoordinates(0,0,2000); //move to side
 	delay(ms);
-	for(int i=0; i<2; i++){
+	for(int i=0; i<2; i++){ 
 		int a1=11;
 		int a2=40;
-		setCoordinates(a1+10,a2+10,2000);//
-		setCoordinates(a1+10,a2-10,2000);//
-		setCoordinates(a1-10,a2+10,2000);//
-		setCoordinates(a1-10,a2-10,2000);//
+		setCoordinates(a1+10,a2+10,2000);
+		setCoordinates(a1+10,a2-10,2000);
+		setCoordinates(a1-10,a2+10,2000);
+		setCoordinates(a1-10,a2-10,2000);
 	}
 	setCoordinates(0,0,2000); //move to side
 	digitalWrite(pinLinear1, LOW);
@@ -73,7 +81,7 @@ void linearActuator(){
 bool setCoordinates(int a1, int a2, int moveTime){
 	pos[0]=a1;
 	pos[1]=a2;
-	zowi.moveServos(moveTime, pos); //2000
+	zowi.moveServos(moveTime, pos); 
 	return true;
 }
 
@@ -81,16 +89,46 @@ bool setCoordinates(int a1, int a2, int moveTime){
 
 
 void useTool(int tool, int state){
-	Servo myServo;
+	static Servo myServo;
 	myServo.attach(tool);
-	myServo.write(90); //needle down or press bottle
-	if(tool!=4){
-		delay(150);
-		myServo.write(0); //release bottle
+
+	static int posInit=60;
+	int posFinal=110;
+	int steps=5;	
+	int ms=1000;
+	
+	static int positions[3]={posInit,posInit,posInit};
+
+	if(tool==pinBlack){
+		if(positions[0]<posFinal) {
+	 		positions[0]=positions[0]+steps; //increment position of syringe
+	 		myServo.write(positions[0]);
+	 		Serial.println(positions[0]);
+	 		delay(ms);
+	 		myServo.detach();
+		 	}
 	}
-	else {
-		if (state==1) myServo.write(0); //needle up
+	else if (tool=pinYellow){
+		if(positions[1]<posFinal) {
+	 		positions[1]=positions[1]+steps; //increment position of syringe
+	 		myServo.write(positions[1]); 
+	 		delay(ms);
+	 		myServo.detach();			
+		 	}
 	}
+	else if (tool=pinWhite){
+		if(positions[2]<posFinal) {
+	 		positions[2]=positions[2]+steps; //increment position of syringe
+	 		myServo.write(positions[2]); 
+	 		delay(ms);
+	 		myServo.detach();			
+		 	}
+	}
+	else if (tool=pinNeedle){
+		if (state==0) myServo.write(0); //needle down
+		 	else myServo.write(90);
+	}	
+	
 }
 
 
@@ -111,13 +149,13 @@ void think(String msg){
 		int A1 = msg.substring(0, commaIndex).toInt();
 		int A2 = msg.substring(commaIndex+1, commaIndex2).toInt();
 		int moveTime = msg.substring(commaIndex2+1, commaIndex3).toInt();
-		int scaraOption=msg.substring(commaIndex3).toInt();
+		int scaraOption=msg.substring(commaIndex3+1).toInt();
 		
 		int finishedMoving=false;
 
 		finishedMoving=setCoordinates(A1,A2,moveTime);
 		if(A1==0 && A2==180) Serial.end(); //end comms with scara in starting position
-
+		
 		int pinTool;
 		switch (scaraOption) {
 			case 1:
