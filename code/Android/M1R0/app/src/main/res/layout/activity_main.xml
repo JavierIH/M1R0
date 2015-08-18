@@ -131,6 +131,17 @@
         android:layout_alignBottom="@+id/bqlogo"
         android:layout_centerHorizontal="true" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recharge?"
+        android:id="@+id/checkBox"
+        android:layout_alignTop="@+id/bluetoothButton"
+        android:layout_toEndOf="@+id/bluetoothButton"
+        android:layout_marginStart="44dp"
+        android:layout_marginLeft="625dp"
+        android:layout_marginTop="10dp" />
+
     <!--
     <ImageView
         android:layout_width="wrap_content"

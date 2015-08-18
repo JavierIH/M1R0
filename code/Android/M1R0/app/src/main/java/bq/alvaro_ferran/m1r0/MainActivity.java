@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -46,9 +48,13 @@ public class MainActivity extends Activity {
     Canvas canvas;
     ImageButton black, red, white, needle, linearAct;
     Button bluetoothButton;
+    CheckBox recharge;
     int blackState, yellowState, whiteState, needleState=0;
     int scaraOption=1;
     int color=0xFF000000;
+    String state="";
+
+
 
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
@@ -74,8 +80,8 @@ public class MainActivity extends Activity {
         needle= (ImageButton) findViewById(R.id.imageButton4);
         linearAct= (ImageButton) findViewById(R.id.imageButton5);
         bluetoothButton= (Button) findViewById(R.id.bluetoothButton);
-
-        uiManagement();
+        recharge=(CheckBox) findViewById(R.id.checkBox);
+        //uiManagement();
 
         mHandler = new Handler();
         startRepeatingTask();
@@ -103,6 +109,10 @@ public class MainActivity extends Activity {
                 needle.setImageResource(R.drawable.aguja1);
 
                 color=0XFF000000;
+
+                if(state=="recharge"){
+                    sendBT("recharge0");
+                }
             }
         });
 
@@ -117,6 +127,9 @@ public class MainActivity extends Activity {
 
                 color = 0xFFFF0000;
 
+                if(state=="recharge"){
+                    sendBT("recharge1");
+                }
             }
         });
 
@@ -131,6 +144,10 @@ public class MainActivity extends Activity {
                 needle.setImageResource(R.drawable.aguja1);
 
                 color=0XFFd8d8d8;
+
+                if(state=="recharge"){
+                    sendBT("recharge2");
+                }
 
             }
         });
@@ -160,7 +177,6 @@ public class MainActivity extends Activity {
                     needle.setImageResource(R.drawable.aguja1);
                     linearAct.setImageResource(R.drawable.actuador2);
 
-                    //sendBT("=linearAct+");
                     sendBT("linearAct");
                     Toast.makeText(getBaseContext(), "DIPPING OBJECT IN PAINT", Toast.LENGTH_SHORT).show();
 
@@ -212,6 +228,7 @@ public class MainActivity extends Activity {
                     if(scaraOption==4) {
                         //sendBT("=up+")
                         sendBT("up");
+                        Toast.makeText(getBaseContext(), "up", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 default:
@@ -388,41 +405,34 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-
-
         bluetoothButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v) {
                 bluetoothButton.setVisibility(View.GONE);
+                recharge.setVisibility(View.GONE);
+                connectBT();
+                state="normal";
 
-                BluetoothDevice device = btAdapter.getRemoteDevice(address);    //Pointer to BT in Robot
+            }
+        });
 
-                try {
-                    btSocket = createBluetoothSocket(device);   //Create Socket to Device
-                } catch (IOException e1) {
-                    errorExit("Fatal Error", "In onResume() and socket create failed: " + e1.getMessage() + ".");
-                }
 
-                btAdapter.cancelDiscovery();    //Discovery consumes resources -> Cancel before connecting
+        recharge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if ( isChecked )
+                {
+                    bluetoothButton.setVisibility(View.INVISIBLE);
+                    black.setImageResource(R.drawable.negro1);
+                    connectBT();
+                    state="recharge";
 
-                try {
-                    btSocket.connect();     //Connect to Robot
-                } catch (IOException e) {
-                    try {
-                        btSocket.close();   //If unable to connect, close socket
-                    } catch (IOException e2) {
-                        errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
-                    }
-                }
-
-                try {
-                    outStream = btSocket.getOutputStream(); //Create output stream
-                } catch (IOException e) {
-                    errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
                 }
 
             }
         });
+
 
         uiManagement();
 
@@ -436,20 +446,7 @@ public class MainActivity extends Activity {
     public void onPause() {
         super.onPause();
 
-        if (outStream != null) {
-            try {
-                sendBT(""+0 + "," + 180+"," + 5000 + ","+scaraOption+"");
-                outStream.flush();  //If output stream is not empty, send data
-            } catch (IOException e) {
-                errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");
-            }
-        }
-
-        try     {
-            btSocket.close();   //Close socket
-        } catch (IOException e2) {
-            errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
-        }
+        disconnectBT();
     }
 
 
@@ -486,6 +483,54 @@ public class MainActivity extends Activity {
         return  device.createRfcommSocketToServiceRecord(MY_UUID);
     }
 
+
+    /********CONNECT TO BT**********************************************************************************/
+    public void connectBT(){
+        BluetoothDevice device = btAdapter.getRemoteDevice(address);    //Pointer to BT in Robot
+
+        try {
+            btSocket = createBluetoothSocket(device);   //Create Socket to Device
+        } catch (IOException e1) {
+            errorExit("Fatal Error", "In onResume() and socket create failed: " + e1.getMessage() + ".");
+        }
+
+        btAdapter.cancelDiscovery();    //Discovery consumes resources -> Cancel before connecting
+
+        try {
+            btSocket.connect();     //Connect to Robot
+        } catch (IOException e) {
+            try {
+                btSocket.close();   //If unable to connect, close socket
+            } catch (IOException e2) {
+                errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
+            }
+        }
+
+        try {
+            outStream = btSocket.getOutputStream(); //Create output stream
+        } catch (IOException e) {
+            errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
+        }
+    }
+
+    /********DISCONNECT BT**********************************************************************************/
+
+    public void disconnectBT(){
+        if (outStream != null) {
+            try {
+                sendBT(""+0 + "," + 180+"," + 5000 + ","+scaraOption+"");//only for SCARA
+                outStream.flush();  //If output stream is not empty, send data
+            } catch (IOException e) {
+                errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");
+            }
+        }
+
+        try     {
+            btSocket.close();   //Close socket
+        } catch (IOException e2) {
+            errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
+        }
+    }
     /********SEND DATA**************************************************************************************/
 
     public void sendBT(String message) {
