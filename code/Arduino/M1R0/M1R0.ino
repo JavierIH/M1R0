@@ -51,7 +51,7 @@ String readString(){
 
 
 void recharge(int i){
-	/*static Servo myServo;
+	static Servo myServo;
 	int pin[3]={pinBlack,pinYellow, pinWhite};
 	int mem[3]={memBlack,memYellow, memWhite};
 	int posInit=50;
@@ -59,26 +59,9 @@ void recharge(int i){
 	myServo.attach(pin[i]);
 	myServo.write(posInit);
 	EEPROM.write(mem[i], posInit);
+	delay(1000);
 	myServo.detach();
-
-	Serial.println(i);*/
-
-
-	//recargar las tres a la vez
-	Servo myServo;
-	int pin[3]={pinBlack,pinYellow, pinWhite};
-	int mem[3]={memBlack,memYellow, memWhite};
-	for (int i=0; i<3; i++){
-		int posInit=50;
-		myServo.attach(pin[i]);
-		myServo.write(posInit);
-		EEPROM.write(mem[i], posInit);
-		delay(1000);
-		myServo.detach();
-	}
-
-	if (i ==1) digitalWrite(13,HIGH);
-	else digitalWrite(13,LOW);
+	Serial.println(i);
 }
 
 void linearActuator(){
@@ -131,7 +114,6 @@ void useTool(int tool, int state){
 		if(positions[0]<posFinal) {
 	 		positions[0]=positions[0]+steps; //increment position of syringe
 	 		myServo.write(positions[0]);
-	 		//Serial.println(positions[0]);
 	 		EEPROM.write(memBlack, positions[0]);
 	 		delay(ms);
 	 		myServo.detach();
@@ -139,7 +121,7 @@ void useTool(int tool, int state){
 	}
 	else if (tool==pinYellow){
 		if(positions[1]<posFinal) {
-	 		positions[1]=positions[1]+steps; //increment position of syringe
+	 		positions[1]=positions[1]+steps; 
 	 		myServo.write(positions[1]); 
 	 		EEPROM.write(memYellow, positions[1]);
 	 		delay(ms);
@@ -148,7 +130,7 @@ void useTool(int tool, int state){
 	}
 	else if (tool==pinWhite){
 		if(positions[2]<posFinal) {
-	 		positions[2]=positions[2]+steps; //increment position of syringe
+	 		positions[2]=positions[2]+steps; 
 	 		myServo.write(positions[2]); 
 	 		EEPROM.write(memWhite, positions[2]);
 	 		delay(ms);
@@ -156,14 +138,14 @@ void useTool(int tool, int state){
 		 	}
 	}
 	else if (tool==pinNeedle){
-		ms=500;
+		ms=100;
 		if (state==0 ){
 			myServo.write(5); //needle down
 			delay(ms);
 			myServo.detach();
 		}
 		else{
-			myServo.write(90); //needle down
+			myServo.write(100); //needle up
 			delay(ms);
 			myServo.detach();
 		}

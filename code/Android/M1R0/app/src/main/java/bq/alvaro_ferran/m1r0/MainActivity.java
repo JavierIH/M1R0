@@ -49,7 +49,6 @@ public class MainActivity extends Activity {
     ImageButton black, red, white, needle, linearAct;
     Button bluetoothButton;
     CheckBox recharge;
-    int blackState, yellowState, whiteState, needleState=0;
     int scaraOption=1;
     int color=0xFF000000;
     String state="";
@@ -70,8 +69,6 @@ public class MainActivity extends Activity {
 
         imageView = (ImageView) findViewById(R.id.cubo);
         imageCircles = (ImageView) findViewById(R.id.circulos);
-        //link1 = (ImageView) findViewById(R.id.link1);
-        //link2 = (ImageView) findViewById(R.id.link2);
         bqLogo = (ImageView) findViewById(R.id.bqlogo);
 
         black= (ImageButton) findViewById(R.id.imageButton1);
@@ -81,7 +78,6 @@ public class MainActivity extends Activity {
         linearAct= (ImageButton) findViewById(R.id.imageButton5);
         bluetoothButton= (Button) findViewById(R.id.bluetoothButton);
         recharge=(CheckBox) findViewById(R.id.checkBox);
-        //uiManagement();
 
         mHandler = new Handler();
         startRepeatingTask();
@@ -207,8 +203,6 @@ public class MainActivity extends Activity {
         float bucketY1= imageView.getTop();
         float bucketY2= imageView.getBottom();
 
-        long moveCounter=0;
-
         if (  ( (touchX>bucketX1) && (touchX<bucketX2) )   &&   ( (touchY>bucketY1) && (touchY<bucketY2) )  ) { //si esta dentro del cubo
 
             switch (event.getAction()) {
@@ -226,9 +220,7 @@ public class MainActivity extends Activity {
                     break;
                 case MotionEvent.ACTION_UP:
                     if(scaraOption==4) {
-                        //sendBT("=up+")
                         sendBT("up");
-                        Toast.makeText(getBaseContext(), "up", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 default:
@@ -319,9 +311,6 @@ public class MainActivity extends Activity {
         double time=distance2Points((double) touchXOld,(double) touchYold,(double) touchX,(double) touchY) * unSpeed;
 
         touchXOld=touchX;
-        touchYold=touchY;
-
-        //Toast.makeText(getBaseContext(), ""+time+"", Toast.LENGTH_SHORT).show();
 
         if(angles[0]>0 && time>0) {  //no error
             sendBT("" + angles[0] + "," + angles[1] + "," + time + "," + scaraOption + "");
@@ -337,7 +326,6 @@ public class MainActivity extends Activity {
     /********CIRCLE ANIMATION*******************************************************************************/
 
     public void circleAnimation(float x, float y, float radius, float scaleEnd, float alphaEnd)  {
-
 
         circleBitmap = Bitmap.createBitmap((int) getWindowManager()
                 .getDefaultDisplay().getWidth(), (int) getWindowManager()
@@ -363,8 +351,6 @@ public class MainActivity extends Activity {
         AnimatorSet scaleDown = new AnimatorSet();
         scaleDown.play(scaleDownX).with(scaleDownY).with(transparency);
         scaleDown.start();
-
-
     }
 
 
@@ -383,7 +369,6 @@ public class MainActivity extends Activity {
             AnimatorSet scaleDown = new AnimatorSet();
             scaleDown.play(scaleDownX).with(scaleDownY).with(rotation);
             scaleDown.start();
-
 
             mHandler.postDelayed(mStatusChecker, mInterval);
         }
