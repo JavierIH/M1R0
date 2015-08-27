@@ -167,6 +167,7 @@ public class MainActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sendBT("up");
                     black.setImageResource(R.drawable.negro1);
                     red.setImageResource(R.drawable.rojo1);
                     white.setImageResource(R.drawable.blanco1);
@@ -174,7 +175,7 @@ public class MainActivity extends Activity {
                     linearAct.setImageResource(R.drawable.actuador2);
 
                     sendBT("linearAct");
-                    Toast.makeText(getBaseContext(), "DIPPING OBJECT IN PAINT", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), "DIPPING OBJECT IN PAINT", Toast.LENGTH_SHORT).show();
 
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -211,6 +212,9 @@ public class MainActivity extends Activity {
                         boolean draw=sendCoordinates(touchX, touchY); //only sends and draws reacheable points
                         if  (draw==true) circleAnimation(touchX, touchY,30,2,0);
                     }
+                    else
+                        sendBT("up");
+
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if(scaraOption==4){
@@ -220,6 +224,8 @@ public class MainActivity extends Activity {
                     break;
                 case MotionEvent.ACTION_UP:
                     if(scaraOption==4) {
+                       // Toast.makeText(getBaseContext(), "up", Toast.LENGTH_SHORT).show();
+                        //for (int i=0; i<100; i++)
                         sendBT("up");
                     }
                     break;
@@ -307,7 +313,7 @@ public class MainActivity extends Activity {
 
         double[] angles=inverseKinematics(touchX,touchY);
 
-        double unSpeed=4;
+        double unSpeed=4;//4
         double time=distance2Points((double) touchXOld,(double) touchYold,(double) touchX,(double) touchY) * unSpeed;
 
         touchXOld=touchX;
@@ -503,7 +509,7 @@ public class MainActivity extends Activity {
     public void disconnectBT(){
         if (outStream != null) {
             try {
-                sendBT(""+0 + "," + 180+"," + 5000 + ","+scaraOption+"");//only for SCARA
+                sendBT(""+0 + "," + 140+"," + 5000 + ","+0+"");//only for SCARA
                 outStream.flush();  //If output stream is not empty, send data
             } catch (IOException e) {
                 errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");

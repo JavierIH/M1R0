@@ -9,7 +9,7 @@ bool newInfoReceived=false;
 int memBlack=50, memYellow=60, memWhite=70;
 
 Zowi zowi;
-int pos[] = {0, 180, 0,0};
+int pos[] = {0, 140, 0,0};
 
 
 
@@ -61,29 +61,22 @@ void recharge(int i){
 	EEPROM.write(mem[i], posInit);
 	delay(1000);
 	myServo.detach();
-	Serial.println(i);
+	//Serial.println(i);
 }
 
 void linearActuator(){
-	int ms=20000;
+	int ms=24000;
 	digitalWrite(pinLinear1, HIGH);
 	digitalWrite(pinLinear2, LOW);
-	setCoordinates(0,0,2000); //move to side
+	setCoordinates(0,140,5000);
 	delay(ms);
-	for(int i=0; i<2; i++){ 
-		int a1=11;
-		int a2=40;
-		setCoordinates(a1+10,a2+10,2000);
-		setCoordinates(a1+10,a2-10,2000);
-		setCoordinates(a1-10,a2+10,2000);
-		setCoordinates(a1-10,a2-10,2000);
-	}
-	setCoordinates(0,0,2000); //move to side
 	digitalWrite(pinLinear1, LOW);
 	digitalWrite(pinLinear2, HIGH);
-	delay(10000);
-	setCoordinates(0,180,5000);
+	delay(24000);
+	digitalWrite(pinLinear1, LOW);
+	digitalWrite(pinLinear2, LOW);
 }
+
 
 
 
@@ -103,8 +96,9 @@ void useTool(int tool, int state){
 	myServo.attach(tool);
 
 	//static int posInit=50;
-	int posFinal=140;
-	int steps=5;	
+	int posFinal=134;//140
+	int steps=14;//5	
+	// (134-50)/14=6 times each color
 	int ms=1000;
 	
 	//static int positions[3]={posInit,posInit,posInit};
@@ -115,42 +109,35 @@ void useTool(int tool, int state){
 	 		positions[0]=positions[0]+steps; //increment position of syringe
 	 		myServo.write(positions[0]);
 	 		EEPROM.write(memBlack, positions[0]);
-	 		delay(ms);
-	 		myServo.detach();
 		 	}
 	}
 	else if (tool==pinYellow){
 		if(positions[1]<posFinal) {
 	 		positions[1]=positions[1]+steps; 
 	 		myServo.write(positions[1]); 
-	 		EEPROM.write(memYellow, positions[1]);
-	 		delay(ms);
-	 		myServo.detach();			
+	 		EEPROM.write(memYellow, positions[1]);		
 		 	}
 	}
 	else if (tool==pinWhite){
 		if(positions[2]<posFinal) {
 	 		positions[2]=positions[2]+steps; 
 	 		myServo.write(positions[2]); 
-	 		EEPROM.write(memWhite, positions[2]);
-	 		delay(ms);
-	 		myServo.detach();			
+	 		EEPROM.write(memWhite, positions[2]);		
 		 	}
 	}
 	else if (tool==pinNeedle){
-		ms=100;
 		if (state==0 ){
 			myServo.write(5); //needle down
-			delay(ms);
-			myServo.detach();
+			ms=200;
 		}
 		else{
-			myServo.write(100); //needle up
-			delay(ms);
-			myServo.detach();
+			myServo.write(90); //needle up
+			ms=500;
 		}
 	}
-	
+
+	delay(ms);
+	myServo.detach();
 }
 
 
@@ -162,6 +149,7 @@ void think(String msg){
 	}
 	else if(msg=="up"){
 		useTool(pinNeedle,1);
+		delay(10);
 	}
 	else if(msg.substring(0,8)=="recharge"){
 		recharge( msg.substring(8).toInt() );
@@ -179,7 +167,7 @@ void think(String msg){
 		int finishedMoving=false;
 
 		finishedMoving=setCoordinates(A1,A2,moveTime);
-		if(A1==0 && A2==180) Serial.end(); //end comms with scara in starting position
+		if(A1==0 && A2==140) Serial.end(); //end comms with scara in starting position
 		
 		int pinTool;
 		switch (scaraOption) {
@@ -195,9 +183,12 @@ void think(String msg){
 			case 4:
 				pinTool=pinNeedle;
 				break;
+			default:
+				pinTool=0;
 		}
 		
-		if(finishedMoving==true) useTool(pinTool,0);
+		if (pinTool!=0)
+			if(finishedMoving==true) useTool(pinTool,0);
 	}
 }
 
