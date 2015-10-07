@@ -26,3 +26,4 @@ class Kinematics(object):
         self.result_joints[0] = np.rad2deg(self.result_joints[0])
         self.result_joints[1] = np.rad2deg(self.result_joints[1])
         return self.result_joints
+
