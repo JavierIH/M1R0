@@ -5,13 +5,10 @@ class Kinematics(object):
 
     def __init__(self):
         self.arm = kdl.Chain()
-        self.arm.addSegment(kdl.Segment(kdl.Joint(kdl.Joint.RotZ), kdl.Frame(kdl.Vector(0,30,0))))
-        self.arm.addSegment(kdl.Segment(kdl.Joint(kdl.Joint.RotZ), kdl.Frame(kdl.Vector(0,20,0))))
+        self.arm.addSegment(kdl.Segment(kdl.Joint(kdl.Joint.RotZ), kdl.Frame(kdl.Vector(300,0,0))))
+        self.arm.addSegment(kdl.Segment(kdl.Joint(kdl.Joint.RotZ), kdl.Frame(kdl.Vector(0,-200,0))))
 
         self.ik_solver = kdl.ChainIkSolverPos_LMA(self.arm)
-
-        self.alpha=0
-        self.beta=0
 
 	self.current_joints = kdl.JntArray(self.arm.getNrOfJoints())
 	self.result_joints = kdl.JntArray(self.arm.getNrOfJoints())
